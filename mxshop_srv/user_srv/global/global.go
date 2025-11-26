@@ -1,0 +1,39 @@
+package global
+
+import (
+	"mxshop_srv/user_srv/config"
+	"gorm.io/gorm"
+)
+
+var (
+	DB *gorm.DB
+	ServerConfig config.ServerConfig
+	NacosConfig config.NacosConfig
+)
+
+// 所有配置从nacos中获取
+// func init() {
+// 	dsn := "root:123456@tcp(mxshop_mysql_db:3306)/mxshop_user_srv?charset=utf8mb4&parseTime=True&loc=Local"
+
+// 	newLogger := logger.New(
+// 		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+// 		logger.Config{
+// 			SlowThreshold: time.Second, // 慢 SQL 阈值
+// 			LogLevel:      logger.Info, // Log level
+// 			Colorful:      true,        // 禁用彩色打印
+// 		},
+// 	)
+
+// 	// 全局模式
+// 	var err error
+// 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
+// 		NamingStrategy: schema.NamingStrategy{
+// 			SingularTable: true, //强制 GORM 使用单数形式的 Go 结构体名称作为数据库的表名
+// 		},
+// 		Logger: newLogger,
+// 	})
+// 	if err != nil {
+// 		panic(err)
+// 	}
+
+// }
