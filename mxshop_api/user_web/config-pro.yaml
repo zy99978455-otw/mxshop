@@ -1,0 +1,7 @@
+host: 'mxshop-nacos-server'
+port: 8848
+namespace: '592510e8-a89f-4108-a2ee-3fb45c46f12f'
+user: 'nacos'
+password: 'nacos'
+dataid: 'user-web.yaml'
+group: 'dev'
