@@ -1,0 +1,22 @@
+
+services:
+  mysql_db:
+    image: mysql:8
+    container_name: mxshop_mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: mxshop_user_srv
+    ports:
+      - "53306:3306"   # ⚙️ 改为安全端口
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - mxshop_network
+
+networks:
+  mxshop_network:
+    name: mxshop_dev_network
+
+volumes:
+  mysql_data:

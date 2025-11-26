@@ -1,0 +1,16 @@
+services:
+  consul:
+    image: hashicorp/consul:latest
+    container_name: mxshop_consul
+    restart: always
+    command: agent -dev -client=0.0.0.0
+    ports:
+      - "8500:8500"    # Web UI 端口
+      - "8600:8600/udp" # DNS 端口
+    networks:
+      - mxshop_network
+
+networks:
+  mxshop_network:
+    # name: mxshop_dev_network 自己创建新的网络
+    external: true #使用已经存在的网络

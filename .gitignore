@@ -1,0 +1,9 @@
+.idea/
+.vscode/
+*.exe
+*.log
+tmp/
+main
+config-debug.yaml
+__debug_bin
+vendor/

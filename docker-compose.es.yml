@@ -1,0 +1,33 @@
+services:
+  es_server:
+    # 替换为 8.x 的最新稳定版本号，例如 8.19.7
+    image: elasticsearch:8.19.7
+    container_name: mxshop_es_db
+    restart: always
+    environment:
+      # 在开发和测试环境中以单节点模式运行
+      - discovery.type=single-node 
+      # 【关键调整】禁用 ES 8.x 默认启用的安全功能
+      - xpack.security.enabled=false
+      # 为 ES 分配内存（保持不变）
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m" 
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - "59200:9200"
+      - "59300:9300"
+    networks:
+      - mxshop_network 
+# ... (其余配置不变) ...
+volumes:
+  # ✅ 声明 esdata，让 Docker 知道这是一个具名数据卷
+  esdata: 
+
+networks:
+  mxshop_network:
+    external: true
+    name: mxshop_dev_network

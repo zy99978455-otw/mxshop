@@ -1,0 +1,40 @@
+services:
+  nacos_server:
+    image: nacos/nacos-server:v2.5.1
+    container_name: mxshop-nacos-server
+    restart: always
+    
+    # 启用单机模式，并指定使用 MySQL 存储
+    environment:
+      - MODE=standalone
+      - SPRING_DATASOURCE_PLATFORM=mysql
+      # 1. 禁用鉴权（跳过 NACOS_AUTH_TOKEN 检查）
+      - NACOS_AUTH_ENABLE=false
+      # # 2. 如果启动仍然卡住，可能需要额外禁用 JWT
+      # - NACOS_AUTH_TOKEN_SECRET_KEY=
+      # ⚠️ 连接您的 MySQL 数据库容器 ⚠️
+      # 使用您的 MySQL 容器名 'mxshop_mysql_db' 作为主机名
+      - MYSQL_SERVICE_HOST=mxshop_mysql_db
+      - MYSQL_SERVICE_PORT=3306
+      - MYSQL_SERVICE_DB_NAME=nacos_config  # Nacos 专用的数据库名
+      - MYSQL_SERVICE_USER=root
+      - MYSQL_SERVICE_PASSWORD=123456
+
+      # ✅【关键修复】添加此行以允许公钥检索
+      - "MYSQL_SERVICE_DB_PARAM=characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true"
+      
+    ports:
+      - "8848:8848" # Nacos Web 控制台端口
+      # 建议添加 gRPC 端口映射，否则客户端 SDK 连接可能会有问题
+      - "9848:9848"
+      
+    networks:
+      - mxshop_network
+
+# ----------------------------------------------------
+# 关键步骤：外部引用现有网络
+# ----------------------------------------------------
+networks:
+  mxshop_network:
+    external: true
+    name: mxshop_dev_network # 必须与 db.yml 中定义的网络名称完全一致！
