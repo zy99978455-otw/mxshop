@@ -1,0 +1,9 @@
+host: 'mxshop-nacos-server'
+port: 8848
+namespace: 'd041d352-afec-4c98-b1ec-7ab875a01793'
+user: 'nacos'
+password: 'nacos'
+dataid: 'goods_srv.yaml'
+group: 'dev'
+
+# 只配置nacos就行
