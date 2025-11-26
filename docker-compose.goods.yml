@@ -1,0 +1,55 @@
+services:
+  # ----------------------------------------------------
+  # 1. Go 服务层 (用户服务)
+  # ----------------------------------------------------
+  goods_srv:
+    image: golang:latest
+    container_name: mxshop_goods_srv
+    volumes:
+      - ./mxshop_srv:/mxshop_srv
+    working_dir: /mxshop_srv/goods_srv/
+    environment:
+      MYSQL_HOST: mysql_db  # mysql的服务名
+      MYSQL_PORT: 3306
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 123456
+      MYSQL_DATABASE: mxshop_goods_srv  # 独立的库名
+    # ports:
+    #   - "8081:8081"
+    # command: go run main.go # 容器启动时执行，路径在working_dir中
+    command: tail -f /dev/null #保持容器不關閉
+    networks:
+      - mxshop_network
+    # depends_on:
+    #   - mysql_db
+      
+    tty: true
+
+  # ----------------------------------------------------
+  # 2. 用户 Web/API 层
+  # ----------------------------------------------------
+  goods_web:
+    image: golang:latest
+    container_name: mxshop_goods_api
+    volumes:
+      - ./mxshop_api:/mxshop_api
+    working_dir: /mxshop_api/goods_web/
+    ports:
+      - "8081:8081"
+    environment:
+      MXSHOP_SRV_HOST: goods_srv
+      MXSHOP_SRV_PORT: 50051
+    command: tail -f /dev/null  # 建议加上这行，和 user_srv 保持一致
+    networks:
+      - mxshop_network
+    depends_on:
+      - goods_srv
+    tty: true
+
+# ----------------------------------------------------
+# 3. 网络定义
+# ----------------------------------------------------
+networks:
+  mxshop_network:
+    external: true
+    name: mxshop_dev_network
