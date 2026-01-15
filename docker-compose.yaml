@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  # -------------------------
+  # 1. Nacos (配置中心 & 注册中心)
+  # -------------------------
+  nacos:
+    image: nacos/nacos-server:v2.3.1
+    container_name: nacos-standalone
+    environment:
+      - MODE=standalone
+      - NACOS_AUTH_ENABLE=false
+      - JVM_XMS=256m
+      - JVM_XMX=256m
+    ports:
+      - "8848:8848"
+      - "9848:9848" # gRPC
+      - "9849:9849" # gRPC
+    volumes:
+      - ./nacos_data/logs:/home/nacos/logs
+      - ./nacos_data/data:/home/nacos/data
+    restart: always
+
+  # -------------------------
+  # 2. MySQL (业务数据库)
+  # -------------------------
+  mysql:
+    # 2026年建议：使用 8.0 或 8.4 LTS。这里使用 8.0 确保 GORM 驱动绝对兼容。
+    image: mysql:8.0 
+    container_name: mxshop-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=mxshop_user_srv
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    # 依然保留 native_password 认证方式，防止 Go 旧版驱动连接报错
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+    restart: always
+
+  # -------------------------
+  # 3. Redis (缓存 & 分布式锁)
+  # -------------------------
+  redis:
+    # 【已修正】根据你的 Docker Desktop 截图，使用 2026 年最新的 8.4.0-alpine
+    image: redis:8.4.0-alpine 
+    container_name: mxshop-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis_data:/data
+    # 开启 AOF 持久化
+    command: redis-server --appendonly yes
+    restart: always

@@ -1,0 +1,17 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+option go_package = ".;proto";
+
+service User {
+  rpc GetUserList(PageInfo) returns (UserListResponse); //用户列表
+}
+
+message PageInfo {
+  uint32 pn = 1;
+  uint32 psize = 2;
+}
+
+message UserListResponse {
+  int32 total = 1;
+  repeated UserListResponse data = 2;
+}
